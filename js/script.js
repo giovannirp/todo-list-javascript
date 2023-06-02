@@ -37,21 +37,36 @@ todosContainer.addEventListener("click", (event) => {
   removeTodo(itemClick);
 });
 
-formSearch.addEventListener("input", (event) => {
-  const inputValue = event.target.value.toLowerCase().trim();
-  
-  Array.from(todosContainer.children)
+const filterTodos = (todos, inputValue, returnMatchedTodos) => todos
+  .filter((todo) => {
+    const matchedTodos = todo.textContent.toLowerCase().includes(inputValue);
+    return returnMatchedTodos ? matchedTodos : !matchedTodos;
+  });
+
+const hideTodos = (todos, inputValue) => {
+  todos
     .filter((todo) => !todo.textContent.toLowerCase().includes(inputValue))
     .forEach((item) => {
       item.classList.add('hidden');
       item.classList.remove('d-flex');
   });
+}
 
-  Array.from(todosContainer.children)
+const showTodos = (todos, inputValue) => {
+  todos
     .filter((todo) => todo.textContent.toLowerCase().includes(inputValue))
     .forEach((item) => {
       item.classList.remove('hidden');
       item.classList.add('d-flex');
   });
+}
+
+formSearch.addEventListener("input", (event) => {
+  const inputValue = event.target.value.toLowerCase().trim();
+  
+  const todos = Array.from(todosContainer.children);
+  hideTodos(todos, inputValue);
+
+  showTodos(todos, inputValue);
 })
 
