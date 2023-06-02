@@ -15,13 +15,6 @@ const addTodoList = (inputValue) => {
   event.target.reset();
 }
 
-formAddTodoList.addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  const inputValue = event.target.add.value.trim();
-  addTodoList(inputValue);
-});
-
 const removeTodo = (itemClickedElement) => {
   const trashDataValue = itemClickedElement.dataset.trash;
   const todo = document.querySelector(`[data-todo="${itemClickedElement.dataset.trash}"]`);
@@ -37,6 +30,12 @@ todosContainer.addEventListener("click", (event) => {
   removeTodo(itemClick);
 });
 
+const manipulateClasses = (todos, classToAdd, classToRemove) => todos
+  .forEach((item) => {
+    item.classList.add(classToAdd);
+    item.classList.remove(classToRemove);
+});
+
 const filterTodos = (todos, inputValue, returnMatchedTodos) => todos
   .filter((todo) => {
     const matchedTodos = todo.textContent.toLowerCase().includes(inputValue);
@@ -44,29 +43,31 @@ const filterTodos = (todos, inputValue, returnMatchedTodos) => todos
   });
 
 const hideTodos = (todos, inputValue) => {
-  todos
-    .filter((todo) => !todo.textContent.toLowerCase().includes(inputValue))
-    .forEach((item) => {
-      item.classList.add('hidden');
-      item.classList.remove('d-flex');
-  });
+  const todosHide = filterTodos(todos, inputValue, false);
+  manipulateClasses(todosHide, 'hidden', 'd-flex');
 }
 
 const showTodos = (todos, inputValue) => {
-  todos
-    .filter((todo) => todo.textContent.toLowerCase().includes(inputValue))
-    .forEach((item) => {
-      item.classList.remove('hidden');
-      item.classList.add('d-flex');
-  });
+  const todosShow =   filterTodos(todos, inputValue, true)
+  manipulateClasses(todosShow, 'd-flex', 'hidden');
 }
 
-formSearch.addEventListener("input", (event) => {
+const addEventForm = (event) => {
+  event.preventDefault();
+
+  const inputValue = event.target.add.value.trim();
+  addTodoList(inputValue);
+}
+
+const searchInputForm = (event) => {
   const inputValue = event.target.value.toLowerCase().trim();
   
   const todos = Array.from(todosContainer.children);
   hideTodos(todos, inputValue);
 
   showTodos(todos, inputValue);
-})
+}
+
+formAddTodoList.addEventListener("submit", addEventForm);
+formSearch.addEventListener("input", searchInputForm);
 
