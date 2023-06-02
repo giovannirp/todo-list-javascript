@@ -10,7 +10,7 @@ input[type="text"]:focus {
   max-width: 400px;
 }
 
-.delete {
+i[data-trash] {
   cursor: pointer;
 }
 
